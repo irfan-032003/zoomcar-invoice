@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zoom Car - Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --accent:#ff7a00; /* logo orange */
+      --accent-dark:#111111; /* logo black */
+      --accent-light:#ffe6cc; /* soft orange */
+      --dark:#111;
+      --muted:#6b7280;
+      --paper:#fff;
+      --page-bg:#f6f7f8;
+      font-family:'Inter',system-ui,Arial,sans-serif;
+    }
+    /* make inputs behave like text (NO layout impact) */
+.text-like {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  outline: none !important;
+  height: auto !important;
+  line-height: normal !important;
+  vertical-align: baseline !important;
+}
+.company-meta input.text-like {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+    *{box-sizing:border-box}
+    body{background:var(--page-bg); padding:24px;}
+
+    .invoice-wrap{
+      max-width:900px;
+      margin:0 auto;
+      background:var(--paper);
+      border-radius:14px;
+      padding:32px 40px;
+      box-shadow:0 6px 20px rgba(10,10,10,0.06);
+    }
+
+    .top{
+      display:flex; align-items:flex-start; justify-content:space-between;
+    }
+    .left-head{max-width:60%;}
+    .invoice-title{
+      text-align:center;
+      font-size:22px;
+      letter-spacing:1px;
+      color:var(--accent-dark);
+      margin:16px 0;
+    }
+
+    .company-block{ text-align:right; }
+    .company-name{ font-weight:700; color:var(--dark); }
+    .company-meta{ color:var(--muted); font-size:14px; line-height:1.5 }
+
+    .logo{ max-width:220px; height:auto; display:block; }
+
+    .bill-section{ display:flex; justify-content:space-between; gap:20px; margin-top:18px; }
+    .bill-to{ flex:1; }
+    .bill-to strong{ display:block; font-weight:700; margin-bottom:6px; }
+    .meta-right{ text-align:right; min-width:180px; }
+
+    .info-strip{ background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01)); padding:10px 14px; border-radius:6px; display:flex; gap:12px; margin:18px 0; }
+    .info-item{ flex:1 }
+    .info-item .label{ font-size:12px; color:var(--muted); }
+    .info-item .value{ font-weight:600; margin-top:6px }
+
+    table.invoice-table{ width:100%; border-collapse:collapse; margin-top:12px; }
+    table.invoice-table thead th{
+      background:linear-gradient(90deg,var(--accent-dark),var(--accent));
+      color:#fff;
+      padding:12px 10px;
+      text-align:left;
+      font-weight:600;
+    }
+    table.invoice-table tbody td{ padding:14px 10px; border-bottom:1px solid #eee; vertical-align:top }
+    table.invoice-table tbody tr.total-row td{ border:none }
+
+    .qty, .rate, .tax, .amount{ text-align:right }
+
+    .notes{ margin-top:14px; color:var(--muted) }
+
+    .summary{ width:320px; margin-left:auto; margin-top:8px }
+    .summary .row{ display:flex; justify-content:space-between; padding:6px 0; color:var(--muted) }
+    .summary .row.total{ font-weight:700; color:var(--dark); font-size:16px }
+
+    .footer{ margin-top:26px; display:flex; justify-content:space-between; align-items:center; gap:10px }
+    .terms{ color:var(--muted); font-size:13px }
+
+    /* controls */
+    .controls{ margin-top:18px; display:flex; gap:10px; align-items:center }
+    input, select{ padding:8px 10px; border-radius:6px; border:1px solid #ddd; -moz-appearance: textfield; }
+    /* Remove number input arrows */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button{
+      background:linear-gradient(90deg,var(--accent-dark),var(--accent));
+      color:#fff;
+      border:none;
+      padding:10px 12px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    input[type=number]{
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+    button{ background:var(--accent); color:white; border:none; padding:10px 12px; border-radius:8px; cursor:pointer }
+    button.secondary{ background:#fff; color:var(--accent); border:1px solid var(--accent) }
+
+    /* small */
+    .small{ font-size:13px }
+
+    /* responsive */
+    @media(max-width:720px){
+      .invoice-wrap{ padding:18px }
+      .top{flex-direction:column; align-items:flex-start}
+      .company-block{text-align:left; margin-top:12px}
+      .summary{ width:100%; margin:10px 0 0 0 }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-wrap" id="invoiceRoot">
+    <div class="top">
+  <!-- LEFT -->
+  <div class="left-head">
+    <div style="color:var(--muted);font-size:15px;margin-bottom: 6px;">Bill To</div>
+
+    <div style="margin-bottom:6px">
+    <input type="text" id="billName" value="Customer name"
+  class="text-like"
+  style="font-weight:700;font-size:16px;color:#111;display:block"/>
+    </div>
+
+ 
+
+<div style="color:var(--muted)">
+  Phone : <input type="text" value="+91"
+    class="text-like"
+    style="font-size:14px;color:#6b7280"/>
+</div>
+ </div>
+
+  <!-- RIGHT -->
+  <div class="company-block">
+    <img src="zoomcarlogo2.jpeg" class="logo" alt="logo">
+
+    <div class="company-name">Zoom Car Detailing Studio</div>
+    <div class="company-meta">
+      Thottapalayam, Vellore - 632004<br>
+      
+      Phone :
+<input type="text" value="9444188871 | 6369881882 "
+  class="text-like"
+  style="font-size:14px;color:#6b7280"/>
+
+    </div>
+  </div>
+</div>
+
+
+    <div class="invoice-title">INVOICE</div>
+
+    <div class="bill-section">
+  <div class="left-col small">
+    <!-- left blank or notes -->
+  </div>
+
+  <div class="meta-right small">
+    <div style="color:var(--muted)">Date</div>
+    <input
+      type="date"
+      id="displayDate"
+      readonly
+      style="border:none;font-weight:600;background:transparent;cursor:default;"
+    />
+  </div>
+</div>
+
+
+ <div class="info-strip">
+  <div class="info-item">
+    <div class="label">Invoice Date</div>
+    <input type="date" id="invoiceDate" value="2025-12-06" />
+  </div>
+
+  <div class="info-item">
+    <div class="label">Due Date</div>
+    <input type="date" id="dueDate" value="2025-12-06" />
+  </div>
+</div>
+
+
+    <!-- Controls to add items -->
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px">
+  <input id="itemName" list="services" placeholder="Item / Service">
+  <input id="itemDesc" placeholder="Short description (optional)">
+  <input id="itemQty" type="number" placeholder="Qty">
+  <input id="itemRate" placeholder="Rate">
+  <button id="addBtn" type="button">Add Item</button>
+  <button id="clearBtn" class="secondary">Clear Items</button>
+</div>
+
+
+    <!-- Invoice table -->
+    <table class="invoice-table" id="invoiceTable">
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th>Item & Description</th>
+          <th class="qty" style="width:80px">Qty</th>
+          <th class="rate" style="width:110px">Rate</th>
+          
+          <th class="amount" style="width:120px">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody">
+        <!-- rows inserted here -->
+      </tbody>
+    </table>
+
+    <div style="display:flex; gap:20px; align-items:flex-start">
+      <div style="flex:1">
+        <div class="notes small"></div>
+      </div>
+      <div class="summary">
+        <div class="row"><div>Sub Total</div><div id="subTotal">Rs. 0.00</div></div>
+        <div class="row total"><div>Total</div><div id="grandTotal">Rs. 0.00</div></div>
+        <div class="row"><div>Balance Due</div><div id="balanceDue">Rs. 0.00</div></div>
+      </div><div id="subTotal">Rs. 0.00</div></div>
+
+    <div class="footer" style="flex-direction:column;align-items:center;text-align:center">
+      <div style="margin-top:10px;font-size:13px;color:#555">
+        Powered by <strong>IrfuWeb</strong><br>
+        <a href="mailto:Irfuweb45@gmail.com" style="color:#ff7a00;text-decoration:none">Irfuweb45@gmail.com</a>
+      </div>
+    </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div style="display:flex;gap:8px">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="downloadBtn">Download PDF</button>
+          <button id="printBtn" class="secondary">Print</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    // Basic item storage
+    const items = [];
+
+    function formatMoney(v){
+      return 'Rs. ' + Number(v).toFixed(2);
+    }
+
+    // addItem now attached after DOMContentLoaded to avoid "not defined" errors
+    function addItem(){
+      const name = document.getElementById('itemName').value.trim();
+      const desc = document.getElementById('itemDesc').value.trim();
+      const qty = parseFloat(document.getElementById('itemQty').value) || 0;
+      const rate = parseFloat(document.getElementById('itemRate').value) || 0;
+      const tax = 0;
+      if(!name){ alert('Enter item name'); return }
+      const amount = qty * rate;
+      items.push({name,desc,qty,rate,tax,amount});
+      renderItems();
+      // clear inputs
+      document.getElementById('itemName').value = '';
+      document.getElementById('itemDesc').value = '';
+      document.getElementById('itemQty').value = 1;
+      document.getElementById('itemRate').value = 0;
+      document.getElementById('Price');
+    }
+
+    function deleteItem(idx){ items.splice(idx,1); renderItems(); }
+    function clearItems(){ if(confirm('Clear all items?')){ items.length=0; renderItems(); } }
+function renderItems(){
+  const tbody = document.getElementById('itemsBody');
+  tbody.innerHTML = '';
+
+  let sub = 0;
+
+  items.forEach((it, i) => {
+    const rowTotal = it.qty * it.rate;
+    sub += rowTotal;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>
+        <strong>${it.name}</strong>
+        <div style="font-size:13px;color:#6b7280">${it.desc || ''}</div>
+      </td>
+      <td class="qty">${it.qty}</td>
+      <td class="rate">${it.rate.toFixed(2)}</td>
+      <td class="amount">Rs. ${rowTotal.toFixed(2)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('subTotal').innerText = `Rs. ${sub.toFixed(2)}`;
+  document.getElementById('grandTotal').innerText = `Rs. ${sub.toFixed(2)}`;
+  document.getElementById('balanceDue').innerText = `Rs. ${sub.toFixed(2)}`;
+}
+
+
+    function recalculate(){ renderItems(); }
+
+    // PDF generation
+    async function generatePDF(){
+      // If jsPDF is available, use it. Otherwise fallback to print dialog.
+      if(window.jspdf && window.jspdf.jsPDF){
+        try{
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({unit:'pt', format:'a4'});
+
+          // draw logo on right - attempt to load image from document
+          const logo = document.getElementById('companyLogo');
+          try{
+            const imgData = await toDataUrl(logo.src);
+            // position logo near top-right
+            doc.addImage(imgData, 'JPEG', 420, 30, 140, 40);
+          }catch(e){ /* ignore if logo can't be loaded cross-origin */ }
+
+          doc.setFontSize(18);
+          doc.setTextColor(20);
+          doc.text('INVOICE', 280, 90, {align:'center'});
+
+          // Bill to left
+          doc.setFontSize(10);
+          doc.setTextColor(100);
+          doc.text('Bill To', 40, 130);
+          doc.setFontSize(12);
+          doc.setTextColor(20);
+          doc.text(document.getElementById('billName').value, 40, 148);
+          doc.setFontSize(10);
+          doc.setTextColor(100);
+          doc.text(document.getElementById('billAddress').value, 40, 164);
+          doc.text(document.getElementById('billPhone').value, 40, 178);
+
+          // invoice meta on right
+          doc.setFontSize(10);
+          doc.setTextColor(100);
+          doc.text('Invoice#', 420, 130);
+          doc.setFontSize(12);
+          doc.setTextColor(20);
+          doc.text(document.getElementById('invoiceNo').innerText, 420, 148);
+          doc.setFontSize(10);
+          doc.setTextColor(100);
+          doc.text('Date', 420, 164);
+          doc.setFontSize(11);
+          doc.setTextColor(20);
+          doc.text(document.getElementById('invoiceDate').value, 420, 180);
+
+          // build table data
+          const head = [['#','Item & Description','Qty','Rate','Tax %','Amount']];
+          const body = items.map((it,i)=>{
+            const taxAmount = 0;
+            const rowTotal = it.amount + taxAmount;
+            return [ String(i+1), it.name + (it.desc? '\n' + it.desc : ''), String(it.qty), it.rate.toFixed(2), it.tax.toFixed(2), rowTotal.toFixed(2) ];
+          });
+
+          // use autoTable
+          doc.autoTable({
+            startY:200,
+            head: head,
+            body: body,
+            theme:'striped',
+            headStyles:{ fillColor:[255,122,0], textColor:255 },
+            styles:{ fontSize:9 }
+          });
+
+          // summary
+          const finalY = doc.lastAutoTable && doc.lastAutoTable.finalY ? doc.lastAutoTable.finalY : 200;
+
+          // read text and strip any non-numeric characters (keep dot and minus)
+          function readNum(id){
+            const t = (document.getElementById(id) && document.getElementById(id).innerText) || '';
+            const cleaned = String(t).replace(/[^0-9.\-]/g, '');
+            return cleaned === '' ? 0 : parseFloat(cleaned);
+          }
+
+          const sub = readNum('subTotal');
+
+          // ensure numeric and fixed to 2 decimals for display
+          const subFixed = Number(sub).toFixed(2);
+
+          const grandNum = (Number(sub) - Number(discount) + Number(ship));
+          const grandFixed = grandNum.toFixed(2);
+
+          doc.setFontSize(10);
+          doc.text('Sub Total', 380, finalY + 30);
+          doc.text('Rs.  ' + subFixed, 520, finalY + 30, {align:'right'});
+          doc.setFontSize(12);
+          doc.setFont(undefined, 'bold');
+          doc.text('Total', 380, finalY + 96);
+          doc.text('Rs.  ' + grandFixed, 520, finalY + 96, {align:'right'});
+
+          doc.save(document.getElementById('invoiceNo').innerText + '.pdf');
+          return;
+        }catch(e){
+          console.warn('jsPDF failed, falling back to print:', e);
+        }
+      }
+
+      // Fallback: use window.print() for a reliable PDF (user can choose "Save as PDF")
+      printInvoice();
+    }
+
+    function printInvoice(){ window.print(); }
+
+    // helper to convert image url to dataURL
+    function toDataUrl(url){
+      return new Promise((resolve, reject)=>{
+        // If it's a relative path to local file when opened from file:// it should work.
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function(){
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img,0,0);
+          resolve(canvas.toDataURL('image/jpeg'));
+        };
+        img.onerror = function(e){ reject(e); };
+        img.src = url;
+        // fallback: if browser blocks, reject
+        setTimeout(()=>{},500);
+      })
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  const displayDate = document.getElementById('displayDate');
+
+  if (displayDate) {
+    displayDate.value = today;
+  }
+});
+
+    // when page loads, ensure default values and wire up controls
+    document.addEventListener('DOMContentLoaded', ()=>{
+      // invoice date/due date set from provided values (already set in HTML)
+      renderItems();
+
+      // wire up buttons (avoid inline onclick to prevent "not defined" in some contexts)
+      const addBtn = document.getElementById('addBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const printBtn = document.getElementById('printBtn');
+
+      if(addBtn) addBtn.addEventListener('click', addItem);
+      if(clearBtn) clearBtn.addEventListener('click', clearItems);
+      if(downloadBtn) downloadBtn.addEventListener('click', generatePDF);
+      if(printBtn) printBtn.addEventListener('click', printInvoice);
+    });
+  </script>
+<datalist id="services">
+<option value="Interior Detailing">
+<option value="Exterior Detailing">
+<option value="Car Wash & Wax">
+<option value="Foam Wash / Snow Foam">
+<option value="Clay Bar Treatment">
+<option value="Hand Wash & Dry">
+<option value="Paint Correction / Buffing">
+<option value="Engine Cleaning">
+<option value="Graphene Coating">
+<option value="Ceramic Coating">
+<option value="Pet Hair Removal">
+<option value="PPF">
+</datalist>
+</body>
+</html>
