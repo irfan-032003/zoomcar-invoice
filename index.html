@@ -136,7 +136,7 @@
     <div style="color:var(--muted);font-size:15px;margin-bottom: 6px;">Bill To</div>
 
     <div style="margin-bottom:6px">
-    <input type="text" id="billName" value="Customer Name:"
+    <input type="text" id="billName" value="Customer Name :"
   class="text-like"
   style="font-weight:700;font-size:16px;color:#111;display:block"/>
     </div>
@@ -148,8 +148,8 @@
     class="text-like"
     style="font-size:14px;color:#6b7280"/>
 </div>
-    <div style="color:var(--muted)">
-  Vehicle No : <input type="text" value="TN"
+<div style="color:var(--muted)">
+  Vehicle No : <input type="text" value=""
     class="text-like"
     style="font-size:14px;color:#6b7280"/>
 </div>
@@ -190,7 +190,7 @@
     />
   </div>
 </div>
-  <!-- Controls to add items -->
+    <!-- Controls to add items -->
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px">
   <input id="itemName" list="services" placeholder="Item / Service">
   <input id="itemDesc" placeholder="Short description (optional)">
@@ -228,9 +228,8 @@
       </div><div id="subTotal">Rs. 0.00</div></div>
 
     <div class="footer" style="flex-direction:column;align-items:center;text-align:center">
-      <div style="margin-top:10px;font-size:13px;color:#555">
-        Powered by <strong>Irfuweb45@gmail.com</strong><br>
-      </div>
+      <div style="margin-top:10px;font-size:13px;color:#dd8a0c">
+        Powered by <strong>Irfuweb45@gmail.com</strong><br>      </div>
     </div>
       <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
         <div style="display:flex;gap:8px">
@@ -301,7 +300,7 @@ function renderItems(){
 
   document.getElementById('subTotal').innerText = `Rs. ${sub.toFixed(2)}`;
   document.getElementById('grandTotal').innerText = `Rs. ${sub.toFixed(2)}`;
-  document.getElementById('balanceDue').innerText = `Rs. ${sub.toFixed(2)}`;
+  //document.getElementById('balanceDue').innerText = `Rs. ${sub.toFixed(2)}`; 
 }
 
 
@@ -473,6 +472,4 @@ function renderItems(){
 <option value="PPF">
 </datalist>
 </body>
-
 </html>
-
