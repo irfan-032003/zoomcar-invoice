@@ -136,7 +136,7 @@
     <div style="color:var(--muted);font-size:15px;margin-bottom: 6px;">Bill To</div>
 
     <div style="margin-bottom:6px">
-    <input type="text" id="billName" value="Customer name:"
+    <input type="text" id="billName" value="Customer Name:"
   class="text-like"
   style="font-weight:700;font-size:16px;color:#111;display:block"/>
     </div>
@@ -145,6 +145,11 @@
 
 <div style="color:var(--muted)">
   Phone : <input type="text" value="+91"
+    class="text-like"
+    style="font-size:14px;color:#6b7280"/>
+</div>
+    <div style="color:var(--muted)">
+  Vehicle No : <input type="text" value="TN"
     class="text-like"
     style="font-size:14px;color:#6b7280"/>
 </div>
@@ -185,22 +190,7 @@
     />
   </div>
 </div>
-
-
- <div class="info-strip">
-  <div class="info-item">
-    <div class="label">Invoice Date</div>
-    <input type="date" id="invoiceDate" value="2025-12-06" />
-  </div>
-
-  <div class="info-item">
-    <div class="label">Due Date</div>
-    <input type="date" id="dueDate" value="2025-12-06" />
-  </div>
-</div>
-
-
-    <!-- Controls to add items -->
+  <!-- Controls to add items -->
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px">
   <input id="itemName" list="services" placeholder="Item / Service">
   <input id="itemDesc" placeholder="Short description (optional)">
@@ -235,7 +225,6 @@
       <div class="summary">
         <div class="row"><div>Sub Total</div><div id="subTotal">Rs. 0.00</div></div>
         <div class="row total"><div>Total</div><div id="grandTotal">Rs. 0.00</div></div>
-        <div class="row"><div>Balance Due</div><div id="balanceDue">Rs. 0.00</div></div>
       </div><div id="subTotal">Rs. 0.00</div></div>
 
     <div class="footer" style="flex-direction:column;align-items:center;text-align:center">
@@ -486,3 +475,4 @@ function renderItems(){
 </body>
 
 </html>
+
